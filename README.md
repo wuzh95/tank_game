@@ -7,20 +7,88 @@ A Python `pygame` tank battle game using a structured, production-style workflow
 1. Create venv:
    - `uv venv tank_game`
 2. Install dependencies:
-   - `uv sync --python tank_game\\Scripts\\python.exe --extra dev`
+   - `uv pip install --python tank_game\\Scripts\\python.exe -e .[dev]`
 3. Run game:
    - `uv run --python tank_game\\Scripts\\python.exe tank-game`
 4. Install git hooks:
    - `uv run --python tank_game\\Scripts\\python.exe pre-commit install`
+5. Note:
+   - Avoid `uv sync` without explicit environment control, as it may create a default `.venv`.
 
 ## Project Structure
 
-- `tank_battle/`: core game package
-- `tank_battle/entities/`: gameplay entities (`Player`, `Enemy`, `Bullet`, etc.)
-- `tank_battle/systems/`: AI, collision, spawning, and level loading systems
-- `tank_battle/assets/`: level configuration and game assets
-- `tests/`: test suite
-- `pyproject.toml`: dependency and tooling configuration
+```text
+proj1/
+├─ .github/
+│  └─ workflows/
+│     ├─ ci.yml
+│     └─ release.yml
+├─ tank_battle/
+│  ├─ assets/
+│  │  └─ levels.json
+│  ├─ entities/
+│  │  ├─ tank_base.py
+│  │  ├─ player.py
+│  │  ├─ enemy.py
+│  │  ├─ bullet.py
+│  │  └─ item.py
+│  ├─ systems/
+│  │  ├─ ai.py
+│  │  ├─ collision.py
+│  │  ├─ spawn.py
+│  │  └─ level.py
+│  ├─ game.py
+│  ├─ main.py
+│  └─ settings.py
+├─ tests/
+│  └─ test_imports.py
+├─ .pre-commit-config.yaml
+├─ Makefile
+├─ justfile
+├─ pyproject.toml
+├─ uv.lock
+└─ README.md
+```
+
+### Folder/Module Responsibilities
+
+- `.github/workflows/`
+  - `ci.yml`: runs lint (`ruff`) and tests (`pytest`) on push/PR.
+  - `release.yml`: builds Windows `.exe` with `PyInstaller` and uploads/publishes artifacts.
+
+- `tank_battle/` (main game package)
+  - `main.py`: application entry point; initializes `pygame` and starts the game loop.
+  - `game.py`: main state machine and runtime orchestration (`MENU/PLAYING/PAUSED/WIN/GAME_OVER`), rendering, input, and progression.
+  - `settings.py`: centralized constants (screen size, speeds, colors, cooldowns, asset paths); includes packaged-exe path handling.
+  - `assets/levels.json`: data-driven level definitions (spawn points, waves, wall layout, per-level enemy params).
+
+- `tank_battle/entities/` (domain objects)
+  - `tank_base.py`: shared tank movement/collision primitives.
+  - `player.py`: player movement, firing cooldown, buffs, damage handling.
+  - `enemy.py`: enemy data and behavior timers; firing logic.
+  - `bullet.py`: projectile movement, lifetime, owner attribution.
+  - `item.py`: pickup model, lifetime, rendering metadata.
+
+- `tank_battle/systems/` (gameplay systems)
+  - `ai.py`: enemy patrol/chase behavior updates.
+  - `collision.py`: bullet collision resolution, enemy death/drop handling, item pickup effects.
+  - `spawn.py`: wave and spawn-cap control for enemies.
+  - `level.py`: level config loading/parsing from JSON into runtime objects.
+
+- `tests/`
+  - `test_imports.py`: smoke test to ensure entry import validity; baseline for CI checks.
+
+- Root tooling/config files
+  - `pyproject.toml`: project metadata, dependencies, `ruff`/`pytest` config, console entrypoint.
+  - `uv.lock`: locked dependency graph for reproducible installs.
+  - `.pre-commit-config.yaml`: local git hook checks (format/lint/basic hygiene).
+  - `Makefile` / `justfile`: one-command developer workflow wrappers.
+
+### Generated Artifacts (not source)
+
+- `tank_battle/tank-game.exe`: locally built Windows executable output.
+- `build/` (when present): temporary/intermediate build files from `PyInstaller`.
+- `__pycache__/` (when present): Python bytecode cache files.
 
 ## Developer Commands
 
@@ -34,11 +102,13 @@ A Python `pygame` tank battle game using a structured, production-style workflow
 - Make (if installed):
   - `make install`
   - `make hooks`
+  - `make verify-env`
   - `make check`
   - `make run`
 - Just (if installed):
   - `just install`
   - `just hooks`
+  - `just verify-env`
   - `just check`
   - `just run`
 
