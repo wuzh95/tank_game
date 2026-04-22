@@ -1,0 +1,39 @@
+[project]
+name = "tank-game"
+version = "0.1.0"
+description = "A single-player tank battle game built with pygame."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "pygame-ce>=2.5.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pre-commit>=4.0.0",
+  "pyinstaller>=6.10.0",
+  "pytest>=8.3.0",
+  "ruff>=0.6.0",
+]
+
+[project.scripts]
+tank-game = "tank_battle.main:main"
+
+[build-system]
+requires = ["hatchling>=1.25.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["tank_battle"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+exclude = [".venv", "tank_game"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+

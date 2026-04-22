@@ -1,0 +1,52 @@
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+    BASE_DIR = Path(sys._MEIPASS) / "tank_battle"  # type: ignore[attr-defined]
+else:
+    BASE_DIR = Path(__file__).resolve().parent
+ASSETS_DIR = BASE_DIR / "assets"
+LEVELS_FILE = ASSETS_DIR / "levels.json"
+
+SCREEN_WIDTH = 960
+SCREEN_HEIGHT = 640
+FPS = 60
+TITLE = "Tank Battle"
+
+TILE_SIZE = 32
+
+PLAYER_SPEED = 180
+PLAYER_HP = 5
+PLAYER_SHOT_COOLDOWN = 0.35
+
+ENEMY_BASE_SPEED = 100
+ENEMY_BASE_HP = 2
+ENEMY_SHOT_COOLDOWN = 1.2
+MAX_ENEMIES_ON_FIELD = 4
+
+BULLET_SPEED = 360
+BULLET_DAMAGE = 1
+BULLET_LIFETIME = 2.5
+
+ITEM_DROP_CHANCE = 0.25
+ITEM_LIFETIME = 8.0
+SHIELD_DURATION = 6.0
+RAPID_FIRE_DURATION = 6.0
+RAPID_FIRE_MULTIPLIER = 0.5
+
+FONT_NAME = "consolas"
+
+COLOR_BG = (30, 30, 34)
+COLOR_GRID = (42, 42, 48)
+COLOR_PLAYER = (60, 190, 90)
+COLOR_ENEMY = (214, 75, 75)
+COLOR_WALL = (138, 105, 66)
+COLOR_BULLET_PLAYER = (235, 245, 96)
+COLOR_BULLET_ENEMY = (239, 140, 86)
+COLOR_TEXT = (240, 240, 240)
+COLOR_ITEM_HEAL = (90, 210, 250)
+COLOR_ITEM_SHIELD = (90, 150, 255)
+COLOR_ITEM_RAPID = (255, 214, 92)
+
